@@ -24,7 +24,7 @@ public class ClienteController {
 	@PostMapping("/add")
 	public ResponseEntity<String> addCliente(@RequestBody Cliente cliente) {
 
-		Cliente clienteAdicionado = clienteService.salvarCliente(cliente.getNome(), cliente.getCpf(),
+		Cliente clienteAdicionado = clienteService.salvarCliente(cliente.getNome(), cliente.getCpf(), cliente.getSenha(),
 				cliente.getDataNascimento(), cliente.getEndereco(), cliente.getTipo() , cliente.getContaInicial());
 
 		if (clienteAdicionado != null) {
@@ -42,4 +42,12 @@ public class ClienteController {
 		List<Cliente> clientes  = clienteService.getClientes();
 		return new ResponseEntity<List<Cliente>>(clientes, HttpStatus.OK);
 	}
+	@GetMapping("/saldoCliente")
+	public ResponseEntity<String> exibirSaldo(@RequestBody Cliente cliente) {
+		Cliente cliente1 = clienteService.findByCpfAndSenha(cliente.getCpf(), cliente.getSenha());
+		
+		return new ResponseEntity<>("Saldo conta corrente= " + cliente1.getContaCorrente().getSaldo() ,
+				HttpStatus.OK);
+	}
 }
+	

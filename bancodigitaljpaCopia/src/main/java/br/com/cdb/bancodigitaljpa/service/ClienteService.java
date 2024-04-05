@@ -22,7 +22,7 @@ public class ClienteService {
 	@Autowired
 	private ClienteRepository clienteRepository;
 
-	public Cliente salvarCliente(String nome, long cpf, LocalDate date, Endereco endereco, TipoCliente tipoCliente,
+	public Cliente salvarCliente(String nome, long cpf, String senha, LocalDate date, Endereco endereco, TipoCliente tipoCliente,
 			TipoConta tipoConta) {
 		// validar os campos
 		Cliente cliente = new Cliente();
@@ -31,6 +31,7 @@ public class ClienteService {
 		cliente.setDataNascimento(date);
 		cliente.setEndereco(endereco);
 		cliente.setTipo(tipoCliente);
+		cliente.setSenha(senha);
 
 		if (tipoConta == TipoConta.CORRENTE) {
 			ContaCorrente conta = new ContaCorrente();
@@ -48,6 +49,10 @@ public class ClienteService {
 		return clienteRepository.findAll();
 
 	}
+	public Cliente findByCpfAndSenha(long cpf, String senha) {
+		return clienteRepository.findByCpfAndSenha(cpf, senha);
+	    }
+	
 	public void transferenciaPix(Cliente cliente1, Cliente cliente2, float valor) {
 		
 	}

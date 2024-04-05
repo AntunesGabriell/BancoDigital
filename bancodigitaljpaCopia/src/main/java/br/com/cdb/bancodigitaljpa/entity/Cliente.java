@@ -25,6 +25,8 @@ public class Cliente {
 
 	private String nome;
 	private Long cpf;
+	String senha;
+
 	private LocalDate dataNascimento;
 
 	@OneToOne(cascade = CascadeType.ALL)
@@ -104,4 +106,11 @@ public class Cliente {
 		this.cpf = cpf;
 	}
 
+	public String getSenha() {
+		return senha;
+	}
+
+	public void setSenha(String senha) {
+		this.senha = senha;
+	}
 }
