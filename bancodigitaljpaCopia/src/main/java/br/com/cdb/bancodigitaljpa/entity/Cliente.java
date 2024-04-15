@@ -5,15 +5,24 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id") // evitar recursao inifinita
 @Entity
 public class Cliente {
 
@@ -32,26 +41,20 @@ public class Cliente {
 	@OneToOne(cascade = CascadeType.ALL)
 	private Endereco endereco;
 
-	@OneToOne(cascade = CascadeType.ALL)
-	private ContaCorrente contaCorrente;
+	@OneToMany(mappedBy = "cliente")
+	@JsonIgnoreProperties("cliente")
+	private List<Conta> contas = new ArrayList<>();
 
-	@OneToOne(cascade = CascadeType.ALL)
-	private ContaPoupanca contaPoupanca;
-
-	public ContaCorrente getContaCorrente() {
-		return contaCorrente;
+	public void adicionarConta(Conta conta) {
+		contas.add(conta);
 	}
 
-	public void setContaCorrente(ContaCorrente conta) {
-		this.contaCorrente = conta;
+	public List<Conta> getContas() {
+		return contas;
 	}
 
-	public ContaPoupanca getContaPoupanca() {
-		return contaPoupanca;
-	}
-
-	public void setContaPoupanca(ContaPoupanca contaPoupanca) {
-		this.contaPoupanca = contaPoupanca;
+	public void setContas(List<Conta> contas) {
+		this.contas = contas;
 	}
 
 	public TipoConta getContaInicial() {

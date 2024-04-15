@@ -14,16 +14,20 @@ import br.com.cdb.bancodigitaljpa.entity.ContaPoupanca;
 import br.com.cdb.bancodigitaljpa.entity.Endereco;
 import br.com.cdb.bancodigitaljpa.entity.TipoCliente;
 import br.com.cdb.bancodigitaljpa.entity.TipoConta;
+import br.com.cdb.bancodigitaljpa.entity.Transferencia;
 import br.com.cdb.bancodigitaljpa.repository.ClienteRepository;
+import br.com.cdb.bancodigitaljpa.repository.ContaRepository;
 
 @Service
 public class ClienteService {
 
 	@Autowired
 	private ClienteRepository clienteRepository;
+	@Autowired
+	private ContaRepository contaRepository;
 
-	public Cliente salvarCliente(String nome, long cpf, String senha, LocalDate date, Endereco endereco, TipoCliente tipoCliente,
-			TipoConta tipoConta) {
+	public Cliente salvarCliente(String nome, long cpf, String senha, LocalDate date, Endereco endereco,
+			TipoCliente tipoCliente, TipoConta tipoConta) {
 		// validar os campos
 		Cliente cliente = new Cliente();
 		cliente.setNome(nome);
@@ -32,13 +36,25 @@ public class ClienteService {
 		cliente.setEndereco(endereco);
 		cliente.setTipo(tipoCliente);
 		cliente.setSenha(senha);
-
-		if (tipoConta == TipoConta.CORRENTE) {
-			ContaCorrente conta = new ContaCorrente();
-			cliente.setContaCorrente(conta);
+		
+		clienteRepository.save(cliente);
+		cliente =clienteRepository.findByCpf(cpf);
+		
+		if (tipoConta == TipoConta.CORRENTE) {			
+			ContaCorrente contaCorrente = new ContaCorrente();
+			contaCorrente.setNumero("01" + cpf);
+			contaCorrente.setClient(cliente);
+			contaRepository.save(contaCorrente);
+			cliente.adicionarConta( contaCorrente);
+			
 		} else {
-			ContaPoupanca conta = new ContaPoupanca();
-			cliente.setContaPoupanca(conta);
+			ContaPoupanca contaPoupanca = new ContaPoupanca();			
+			contaPoupanca.setNumero("02" + cliente.getCpf());
+			contaPoupanca.setClient(cliente);
+			contaRepository.save(contaPoupanca);
+			cliente.adicionarConta(contaPoupanca);
+
+			
 		}
 
 		return clienteRepository.save(cliente);
@@ -49,11 +65,6 @@ public class ClienteService {
 		return clienteRepository.findAll();
 
 	}
-	public Cliente findByCpfAndSenha(long cpf, String senha) {
-		return clienteRepository.findByCpfAndSenha(cpf, senha);
-	    }
+
 	
-	public void transferenciaPix(Cliente cliente1, Cliente cliente2, float valor) {
-		
-	}
 }

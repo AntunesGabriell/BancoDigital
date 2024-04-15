@@ -9,7 +9,7 @@ public class ContaCorrente extends Conta {
     private static final double TAXA_MANUTENCAO_COMUM = 10.0;
     private static final double TAXA_MANUTENCAO_PREMIUM = 5.0;
     private static final double TAXA_MANUTENCAO_SUPER = 0.0;
-
+    private static final TipoConta tipo = TipoConta.CORRENTE;
    
 
     @Override

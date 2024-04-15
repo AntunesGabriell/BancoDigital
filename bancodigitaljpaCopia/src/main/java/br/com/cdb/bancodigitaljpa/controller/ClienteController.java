@@ -7,25 +7,34 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.cdb.bancodigitaljpa.entity.Cliente;
+import br.com.cdb.bancodigitaljpa.entity.TipoConta;
+import br.com.cdb.bancodigitaljpa.entity.Transferencia;
 import br.com.cdb.bancodigitaljpa.service.ClienteService;
+import br.com.cdb.bancodigitaljpa.service.ContaService;
 
 @RestController
 @RequestMapping("/cliente")
 public class ClienteController {
 	@Autowired
 	private ClienteService clienteService;
+	
+	@Autowired
+	private ContaService contaService;
 
 	@PostMapping("/add")
 	public ResponseEntity<String> addCliente(@RequestBody Cliente cliente) {
 
-		Cliente clienteAdicionado = clienteService.salvarCliente(cliente.getNome(), cliente.getCpf(), cliente.getSenha(),
-				cliente.getDataNascimento(), cliente.getEndereco(), cliente.getTipo() , cliente.getContaInicial());
+		Cliente clienteAdicionado = clienteService.salvarCliente(cliente.getNome(), cliente.getCpf(),
+				cliente.getSenha(), cliente.getDataNascimento(), cliente.getEndereco(), cliente.getTipo(),
+				cliente.getContaInicial());
 
 		if (clienteAdicionado != null) {
 			return new ResponseEntity<>("Cliente " + cliente.getNome() + " adicionado  com sucesso!",
@@ -35,19 +44,17 @@ public class ClienteController {
 		}
 
 	}
-	
+
 	@GetMapping("/listALL")
-	public ResponseEntity<List<Cliente>> getAllClientes(){
-		
-		List<Cliente> clientes  = clienteService.getClientes();
+	public ResponseEntity<List<Cliente>> getAllClientes() {
+
+		List<Cliente> clientes = clienteService.getClientes();
 		return new ResponseEntity<List<Cliente>>(clientes, HttpStatus.OK);
 	}
-	@GetMapping("/saldoCliente")
-	public ResponseEntity<String> exibirSaldo(@RequestBody Cliente cliente) {
-		Cliente cliente1 = clienteService.findByCpfAndSenha(cliente.getCpf(), cliente.getSenha());
-		
-		return new ResponseEntity<>("Saldo conta corrente= " + cliente1.getContaCorrente().getSaldo() ,
-				HttpStatus.OK);
-	}
-}
+
 	
+	
+	
+	
+
+}
